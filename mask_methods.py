@@ -25,6 +25,7 @@ def masker(image, lower, upper, count, env):
     return [[x,y,w,h], mask]
 
 def dimCalc(dimensions):
-
+    if len(dimensions) == 0:
+        return 0
     area = (dimensions[0] + dimensions[2]) * (dimensions[1] + dimensions[3])
     return area
