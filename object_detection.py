@@ -23,7 +23,7 @@ lower = []
 upper = []
 
 
-video=cv2.VideoCapture(0)
+video=cv2.VideoCapture('http://100.84.40.82:8081')
 dimDeviation = []
 count = 0
 maxC = 100
