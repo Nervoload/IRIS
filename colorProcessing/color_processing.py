@@ -1,3 +1,8 @@
+
+
+
+
+
 from scipy import stats
 import pandas as pd 
 import cv2
@@ -5,7 +10,12 @@ import numpy as np
 import joblib
 import os
 import glob
+import socket
 
+TCP_IP = '100.84.40.82'
+TCP_PORT = 3000
+svm = joblib.load('colorProcessing/SVM_RGB_model.sav')
+kmeans = joblib.load('colorProcessing/kMeans_S_model.sav')
 
 def rgb_to_hex(rgb_color):
     hex_color = '#'
@@ -35,9 +45,14 @@ def applyDescriptor(cluster,color):
     elif (cluster == 2) & (color in ['violet','yellow']): return 'dull'
     else:return
 
+def sendColor(message):
+    s=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+    s.connect((TCP_IP,TCP_PORT))
+    s.send(bytes(message,'utf-8'))
+    s.close()
+    return
+
 def main():
-    svm = joblib.load('colorProcessing/SVM_RGB_model.sav')
-    kmeans = joblib.load('colorProcessing/kMeans_S_model.sav')
     files = os.listdir('CNN_outs')
     latest_file = files[0]
 
@@ -46,10 +61,11 @@ def main():
     cluster = kmeans.predict([[data[4]]])
     descriptor =  applyDescriptor(cluster,color)
     res = ' '.join([descriptor,color])
-    text_file = open("ColorProcess_Outs/color.txt", "w")
+    sendColor(res)
+    text_file = open("dynamic-server/mytext.txt", "w")
     n = text_file.write(res)
     text_file.close()
-    return res
+    return 
 
 if __name__ == "__main__":
     main()

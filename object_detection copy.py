@@ -31,11 +31,11 @@ maxC = 100
 while True:
     maxMask = np.array([])
     success, img = video.read()
-    image = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+    image = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     
     # detect only one object at a time
     
-    rCo = masker(image,rlower,rupper,count,img)
+    rCo = masker(image,rlower,rupper,count,img) #get masks
     oCo = masker(image,olower,oupper,count,img)
     yCo = masker(image,ylower,yupper,count,img)
     gCo = masker(image,glower,gupper,count,img)
@@ -44,7 +44,7 @@ while True:
     vCo = masker(image,vlower,vupper,count,img)
     pCo = masker(image,plower,pupper,count,img)
 
-    rMask = rCo[1]
+    rMask = rCo[1] #These are all full zero ndarrays
     oMask = oCo[1]
     yMask = yCo[1]
     gMask = gCo[1]
@@ -54,46 +54,46 @@ while True:
     pMask = pCo[1]
     
     
-    coArr  = [rCo[0],oCo[0],yCo[0],gCo[0],bCo[0],iCo[0],vCo[0],pCo[0]]
+    coArr  = [rCo[0],oCo[0],yCo[0],gCo[0],bCo[0],iCo[0],vCo[0],pCo[0]]#all arrays are 0
 
     dimArr = [dimCalc(rCo[0]),dimCalc(oCo[0]),dimCalc(yCo[0]),dimCalc(gCo[0]),dimCalc(bCo[0]),dimCalc(iCo[0]),dimCalc(vCo[0]),dimCalc(pCo[0])]
   
     maxDim = max(dimArr)
 
-    maxIndex = dimArr.index(maxDim)
+    maxIndex = dimArr.index(maxDim) #is 0 
 
     maxCo = coArr[maxIndex]
 
 
-    if maxCo == rCo:
+    if maxCo == rCo[0]:#rCo is array, mxCo is list 
         lower = rlower
         upper = rupper
         maxMask = rMask
-    elif maxCo == oCo:
+    elif maxCo == oCo[0]:
         lower = olower
         upper = oupper
         maxMask = oMask
-    elif maxCo == yCo:
+    elif maxCo == yCo[0]:
         lower = ylower
         upper = yupper
         maxMask = yMask
-    elif maxCo == gCo:
+    elif maxCo == gCo[0]:
         lower = glower
         upper = gupper
         maxMask = gMask
-    elif maxCo == bCo:
+    elif maxCo == bCo[0]:
         lower = blower
         upper = bupper
         maxMask = bMask
-    elif maxCo == iCo:
+    elif maxCo == iCo[0]:
         lower = ilower
         upper = iupper
         maxMask = iMask
-    elif maxCo == vCo:
+    elif maxCo == vCo[0]:
         lower = vlower
         upper = vupper
         maxMask = vMask
-    elif maxCo == pCo:
+    elif maxCo == pCo[0]:
         lower = plower
         upper = pupper
         maxMask = pMask
@@ -105,8 +105,8 @@ while True:
       
     # Object Detection with a live feed, static observation
     # x,y,w,h are within a similar range % for 5 seconds, then save an image within the rectangle
-    
-    dimDeviation.append(maxCo)
+    np.append(dimDeviation, maxCo)
+    #dimDeviation.append(maxCo)
 
     count += 1
     if count == maxC:
@@ -116,6 +116,7 @@ while True:
         dimStd = np.std(dimDeviation, axis=0)
         print(dimStd)
         # if the standard deviation is less than 10, then save the current rectangle as an image
+        print(dimStd[0])
         if float(dimStd[0]) < 200 and float(dimStd[1]) < 200 and float(dimStd[2]) < 100 and float(dimStd[3]) < 100:
             # save the entire screen as an image
 
@@ -136,7 +137,6 @@ while True:
         # turn lower and upper to numpy arrays
         lower = np.array(lower)
         upper = np.array(upper)
-
         subMask = cv2.inRange(subject, lower, upper)
         
         subContours, newHierarchy = cv2.findContours(subMask,
