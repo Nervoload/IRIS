@@ -5,3 +5,8 @@ We utilize state-of-the-art Artificial Intelligence to extract & identify subjec
 of colour information directly in front of the user.
 
 Detecting objects with a Convolutional Neural Network, we then utilize Support Vector Machines to classify different text-colour pairs under particular HSV value thresholds.
+
+To run mannually, run the object_detection file to generate an image, then subsequently utilize the classifier colorProcessing to run the
+the text to audio generation.
+
+
