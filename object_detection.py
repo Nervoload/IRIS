@@ -10,18 +10,18 @@ ylower = np.array([16,171,128])
 yupper = np.array([39,255,255])
 glower = np.array([40,150,20])
 gupper = np.array([80,255,255])
-blower = np.array([81,128,120])
+blower = np.array([81,100,80])
 bupper = np.array([105,255,255])
-ilower = np.array([106,128,120])
+ilower = np.array([106,100,100])
 iupper = np.array([120,255,255])
-vlower = np.array([121,128,120])
+vlower = np.array([121,100,80])
 vupper = np.array([145,255,255])
-plower = np.array([146,128,120])
+plower = np.array([146,100,80])
 pupper = np.array([168,255,255])
+
 
 lower = []
 upper = []
-
 
 video=cv2.VideoCapture(0)
 dimDeviation = []
@@ -29,6 +29,7 @@ count = 0
 maxC = 100
 
 while True:
+    
     success, img = video.read()
     image = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
     
@@ -103,71 +104,60 @@ while True:
     if len(bounders)!= 0:
         #the biggest contour minimum area is 500
         for contour in bounders:
+            m,n,l,k = cv2.boundingRect(contour)
             if count == 0:
                 biggest_contour = max(bounders, key=cv2.contourArea)
                 x,y,w,h = cv2.boundingRect(biggest_contour)
                 cv2.rectangle(img, (x,y), (x+w,y+h), (0,0,255),3)
-            if cv2.contourArea(contour) > 800:
+            if cv2.contourArea(contour) > 1000:
                   # find the biggest contour
                 biggest_contour = max(bounders, key=cv2.contourArea)
                 # draw a rectangle around the biggest contour
                 x,y,w,h = cv2.boundingRect(biggest_contour)
+                
                 cv2.rectangle(img, (x,y), (x+w,y+h), (0,0,255),3)
                 dims = [x,y,w,h]
-                if len(rcontours) != 0:
-                    for contour in rcontours[0][0]:
-
-                        if contour[0] == biggest_contour[0][0][0] and contour[1] == biggest_contour[0][0][1]:
-                                mask = rmask
-                                lower = rlower
-                                upper = rupper
-                if len(ocontours) != 0:
-                    for contour in ocontours[0][0]:
-                        if contour[0] == biggest_contour[0][0][0] and contour[1] == biggest_contour[0][0][1]:
-                                mask = omask
-                                lower = olower
-                                upper = oupper
-                if len(ycontours) != 0:
-                    for contour in ycontours[0][0]:
-                        if contour[0] == biggest_contour[0][0][0] and contour[1] == biggest_contour[0][0][1]:
-                                mask = ymask
-                                lower = ylower
-                                upper = yupper
-                if len(gcontours) != 0:
-                    for contour in gcontours[0][0]:
-                        if contour[0] == biggest_contour[0][0][0] and contour[1] == biggest_contour[0][0][1]:
-                                mask = gmask
-                                lower = glower
-                                upper = gupper
-                if len(bcontours) != 0:
-                    for contour in bcontours[0][0]:
-                        if contour[0] == biggest_contour[0][0][0] and contour[1] == biggest_contour[0][0][1]:
-                                mask = bmask
-                                lower = blower
-                                upper = bupper
-                if len(icontours) != 0:
-                    for contour in icontours[0][0]:
-                        if contour[0] == biggest_contour[0][0][0] and contour[1] == biggest_contour[0][0][1]:
-                                mask = imask
-                                lower = ilower
-                                upper = iupper
-                if len(vcontours) != 0:
-                    for contour in vcontours[0][0]:
-                        if contour[0] == biggest_contour[0][0][0] and contour[1] == biggest_contour[0][0][1]:
-                                mask = vmask
-                                lower = vlower
-                                upper = vupper
-                if len(pcontours) != 0:
-                    for contour in pcontours[0][0]:
-                        if contour[0] == biggest_contour[0][0][0] and contour[1] == biggest_contour[0][0][1]:
-                                mask = pmask
-                                lower = plower
-                                upper = pupper
-
-                
-
-                # convert the contour tuple to a numpy array
-                # determine which colour the greatest contour is
+            if m == x and n == y and l == w and k == h:
+                for subcon in rcontours:
+                    if np.array_equal(subcon,contour):
+                        mask = rmask
+                        lower = rlower
+                        upper = rupper
+                for subcon in ocontours:
+                    if np.array_equal(subcon,contour):
+                        mask = omask
+                        lower = olower
+                        upper = oupper
+                for subcon in ycontours:
+                    if np.array_equal(subcon,contour):
+                        mask = ymask
+                        lower = ylower
+                        upper = yupper
+                for subcon in gcontours:
+                    if np.array_equal(subcon,contour):
+                        mask = gmask
+                        lower = glower
+                        upper = gupper
+                for subcon in bcontours:
+                    if np.array_equal(subcon,contour):
+                        mask = bmask
+                        lower = blower
+                        upper = bupper
+                for subcon in icontours:
+                    if np.array_equal(subcon,contour):
+                        mask = imask
+                        lower = ilower
+                        upper = iupper
+                for subcon in vcontours:
+                    if np.array_equal(subcon,contour):
+                        mask = vmask
+                        lower = vlower
+                        upper = vupper
+                for subcon in pcontours:
+                    if np.array_equal(subcon,contour):
+                        mask = pmask
+                        lower = plower
+                        upper = pupper
 
                 
 
@@ -196,19 +186,19 @@ while True:
 
         # Subject Detection & image colour correction
 
-        a,b,c,d = 0,0,0,0
         # save the saved image as a subject, and read it's RGB values
 
-        subj = cv2.imread('image.png')
-
-        subj =  simplest_cb(subj,1)
-        
-        subject = cv2.cvtColor(subj, cv2.COLOR_BGR2HSV)
 
         if lower == [] or upper == []:
             count = 0
             dimDeviation = []
             continue
+        
+        subj = cv2.imread('image.png')
+
+        subj =  simplest_cb(subj,1)
+        
+        subject = cv2.cvtColor(subj, cv2.COLOR_BGR2HSV)
 
         subMask = cv2.inRange(subject, lower, upper)
         
@@ -218,25 +208,40 @@ while True:
         if len(subContours)!= 0:
             #the biggest contour minimum area is 500
             for contour in subContours:
-                if cv2.contourArea(contour) >800:
+                if cv2.contourArea(contour) >1000:
                     # find the biggest contour
                     subject_contour = max(subContours, key=cv2.contourArea)
                     # draw a rectangle around the biggest contour
-                    a,b,c,d = cv2.boundingRect(subject_contour)
-                    cv2.rectangle(subj, (a,b), (a+c,b+d), (0,0,255),3)
-                    subj = subj[b:b+d, a:a+c]
+                    x,y,w,h = cv2.boundingRect(subject_contour)
+                    cv2.rectangle(subj, (x,y), (x+w,y+h), (0,0,255),3)
+                    subj = subj[y:y+h, x:x+w]
+        if len(subContours) == 0:
+            count = 0
+            dimDeviation = []
+            continue
+        
+
+        # Save the image into the subject folder CNN_outs
+        if subj.size != 0:
+            cv2.imwrite('CNN_outs/subject.png', subj)
+
+        # Classify the image with the SVM
                        
-       
         # reset the count and dimDeviation
         count = 0
         dimDeviation = []
+        
+        
+        # Save the image into the subject folder CNN_out
+        # save the rectangle as an image
+        subj = subj[y:y+h, x:x+w]
 
+        
         if subj.size == 0:
             count = 0
             dimDeviation = []
             continue
-        # Save the image into the subject folder CNN_out
-        
+
         cv2.imwrite('CNN_out/subject.png', subj)
     # show the webcam and mask
 
