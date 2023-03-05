@@ -17,8 +17,9 @@ def compSceneData(filePath):
     color = cv2.imread(filePath)
     colorRGB = cv2.cvtColor(color, cv2.COLOR_BGR2RGB)
     colorHSV = cv2.cvtColor(color, cv2.COLOR_BGR2HSV)
-    rgb = colorRGB.reshape(1875*3000,3).astype(str)
-    hsv = colorHSV.reshape(1875*3000,3).astype(str)
+    x,y=color.shape[0],color.shape[1]
+    rgb = colorRGB.reshape(x*y,3).astype(str)
+    hsv = colorHSV.reshape(x*y,3).astype(str)
     hsv = list(pd.DataFrame(hsv).mode().iloc[0,:])
     rgb = list(pd.DataFrame(rgb).mode().iloc[0,:])
     colorHex = rgb_to_hex(rgb[1])
@@ -35,19 +36,19 @@ def applyDescriptor(cluster,color):
     else:return
 
 def main():
-    svm = joblib.load('SVM_RGB_model.sav')
-    kmeans = joblib.load('kMeans_S_model.sav')
-    list_of_files = glob.glob('CNN_outs/')
-    latest_file = max(list_of_files, key=os.path.getctime)
-    
-    data = compSceneData(latest_file)
-    color = svm.predict(data[:3])
-    cluster = kmeans.predict(data[4])
+    svm = joblib.load('colorProcessing/SVM_RGB_model.sav')
+    kmeans = joblib.load('colorProcessing/kMeans_S_model.sav')
+    files = os.listdir('CNN_outs')
+    latest_file = files[0]
+
+    data = compSceneData('CNN_outs'+'/'+latest_file)
+    color = svm.predict([data[:3]])[0]
+    cluster = kmeans.predict([[data[4]]])
     descriptor =  applyDescriptor(cluster,color)
-    res = ' '.join([cluster,descriptor])
-    file = open("ColorProcess_outs/color.txt", "w")
-    a = file.write(res)
-    file.close()
+    res = ' '.join([descriptor,color])
+    text_file = open("ColorProcess_Outs/color.txt", "w")
+    n = text_file.write(res)
+    text_file.close()
     return res
 
 if __name__ == "__main__":
