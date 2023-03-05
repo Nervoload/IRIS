@@ -1,0 +1,91 @@
+ /* Center the text */
+ body {
+    text-align: center;
+    background-color: #350012;
+  }
+  /* Set the font and color */
+  h1 {
+    font-family: Didot, serif;
+    color: rgb(141, 0, 42);
+    margin-top: 40px; /* Move title lower */
+    margin-bottom: 0px;
+  }
+  /* Style the title */
+  .title {
+    font-size: 100px;
+    letter-spacing: 0.2em; /* Increase letter spacing */
+    font-family: 'Arya', sans-serif;
+    padding: 20px 75px;
+    border-radius: 60px;
+    background-color: #ffe4aa;
+    display: inline-block;
+  }
+  .overlay {
+    position: absolute;
+    right: 42%;
+    bottom: -5%;
+  }
+  .containter {
+    position: relative;
+  }
+  /* Style the acronym */
+  .subtitle {
+    font-size: 20px;
+    font-family: 'Arya', sans-serif; /*i changed the font*/
+    width: fit-content;
+    margin: 0 auto;
+    margin-bottom: 30px; /* this is to move it colser to the title */
+    color: rgb(255, 241, 177);
+  }
+  /* Style the slogan */
+  .slogan {
+    font-size: 30px;
+    margin-top: 0;
+    color: rgb(250, 243, 176);
+  }
+  /* Style the balls */
+  .ball {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin: 4px;
+    animation: pulsate 1s ease-out;
+    animation-iteration-count: infinite;
+    opacity: 0.5;
+  }
+  .ball1 {
+    background-color: rgb(158, 1, 150);
+    animation-delay: 0.2s;
+  }
+  .ball2 {
+    background-color: rgb(255, 192, 203);
+    animation-delay: 0.4s;
+  }
+  .ball3 {
+    background-color: rgb(255, 105, 180);
+    animation-delay: 0.6s;
+  }
+  @keyframes pulsate {
+    0% {
+      transform: scale(0.1, 0.1);
+      opacity: 0.5;
+    }
+    50% {
+      opacity: 1.0;
+    }
+    100% {
+      transform: scale(1.2, 1.2);
+      opacity: 0;
+    }
+  }
+  
+
+
+
+#lid {
+animation: blink 2.0s infinite;
+}
+
+
+
